@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrient Display</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <h2>Food Types</h2>
+            <ul>
+                <li><a href="homepage.html" tabindex="1">Homepage</a></li>
+                <li><a href="#" data-nutrients='{"carbs": 50, "proteins": 30, "fats": 20}' tabindex="2">Fruits</a></li>
+                <li><a href="#" data-nutrients='{"carbs": 40, "proteins": 40, "fats": 20}' tabindex="3">Vegetables</a></li>
+                <li><a href="#" data-nutrients='{"carbs": 70, "proteins": 20, "fats": 10}' tabindex="4">Grains</a></li>
+                <li><a href="#" data-nutrients='{"carbs": 30, "proteins": 50, "fats": 20}' tabindex="5">Dairy</a></li>
+                <li><a href="#" data-nutrients='{"carbs": 20, "proteins": 60, "fats": 20}' tabindex="6">Proteins</a></li>
+                <li><a href="#" data-nutrients='{"carbs": 10, "proteins": 30, "fats": 60}' tabindex="7">Fats</a></li>
+            </ul>
+        </nav>
+        
+        <main class="content">
+            <h1>Select a Food Type</h1>
+            <button onclick="toggleMode()" class="toggle-mode" tabindex="8">Toggle Dark/Light Mode</button>
+            <button onclick="speakNutrientInfo()" class="speak" tabindex="9">Read Nutrients</button>
+            <p>Content will be displayed here based on your selection.</p>
+            <div class="nutrient-bars">
+                <div class="nutrient-bar">
+                    <div class="bar" id="carbs-bar" data-value="0">Carbohydrates</div>
+                </div>
+                <div class="nutrient-bar">
+                    <div class="bar" id="proteins-bar" data-value="0">Proteins</div>
+                </div>
+                <div class="nutrient-bar">
+                    <div class="bar" id="fats-bar" data-value="0">Fats</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript for Dark/Light Mode, Text-to-Speech -->
+    <script>
+        // Dark/Light Mode Toggle Function
+        function toggleMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        // Text-to-Speech Function to Read Nutrient Values
+        function speakNutrientInfo() {
+            const carbs = document.getElementById('carbs-bar').textContent;
+            const proteins = document.getElementById('proteins-bar').textContent;
+            const fats = document.getElementById('fats-bar').textContent;
+
+            const speechText = `Nutrient values are as follows. Carbohydrates: ${carbs}. Proteins: ${proteins}. Fats: ${fats}.`;
+            const speech = new SpeechSynthesisUtterance(speechText);
+            speech.lang = "en-US";
+            window.speechSynthesis.speak(speech);
+        }
+
+        // Event listener for nutrient links to update bars and set nutrient info
+        document.addEventListener("DOMContentLoaded", function() {
+            const bars = {
+                carbs: document.getElementById('carbs-bar'),
+                proteins: document.getElementById('proteins-bar'),
+                fats: document.getElementById('fats-bar'),
+            };
+
+            const links = document.querySelectorAll('.navbar ul li a');
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const nutrientsData = this.getAttribute('data-nutrients');
+
+                    if (nutrientsData) {
+                        e.preventDefault();
+                        const nutrients = JSON.parse(nutrientsData);
+
+                        // Reset bars
+                        Object.values(bars).forEach(bar => {
+                            bar.style.width = '0%';
+                            bar.textContent = '';
+                        });
+
+                        // Update bars with new values
+                        bars.carbs.style.width = nutrients.carbs + '%';
+                        bars.carbs.textContent = nutrients.carbs + '%';
+                        bars.proteins.style.width = nutrients.proteins + '%';
+                        bars.proteins.textContent = nutrients.proteins + '%';
+                        bars.fats.style.width = nutrients.fats + '%';
+                        bars.fats.textContent = nutrients.fats + '%';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
